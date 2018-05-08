@@ -35,9 +35,9 @@ public class EditorActivity extends AppCompatActivity
         setContentView(R.layout.activity_editor);
 
         Intent intent = getIntent();
-        Uri currentProductUri = intent.getData();
+        mCurrentProductUri = intent.getData();
 
-        if(currentProductUri == null) {
+        if(mCurrentProductUri == null) {
             setTitle(getString(R.string.editor_activity_add_product));
         } else {
             setTitle(getString(R.string.editor_activity_edit_product));
