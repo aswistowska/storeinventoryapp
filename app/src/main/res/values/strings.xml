@@ -19,4 +19,6 @@
     <string name="editor_activity_add_product">Add New Product</string>
     <string name="editor_activity_edit_product">Edit Product</string>
     <string name="action_edit">Edit</string>
+    <string name="editor_update_product_failed">Error with updating product</string>
+    <string name="editor_update_product_successful">Product updated</string>
 </resources>

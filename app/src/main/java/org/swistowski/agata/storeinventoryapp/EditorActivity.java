@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -53,37 +54,66 @@ public class EditorActivity extends AppCompatActivity
 
     }
 
-    private void insertProduct() {
+    private void saveProduct() {
         String productNameString = mProductNameEditText.getText().toString().trim();
         String productPriceString = mProductPriceEditText.getText().toString().trim();
-        int productPrice = Integer.parseInt(productPriceString);
+        //int productPrice = Integer.parseInt(productPriceString);
         String productQuantityString = mProductQuantityEditText.getText().toString().trim();
-        int productQuantity = Integer.parseInt(productQuantityString);
+        //int productQuantity = Integer.parseInt(productQuantityString);
         String supplierNameString = mSupplierNameEditText.getText().toString().trim();
         String supplierPhoneNumberString = mSupplierPhoneNumberEditText.getText().toString().trim();
 
         //ProductDbHelper mDbHelper = new ProductDbHelper(this);
         //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        if(mCurrentProductUri == null && TextUtils.isEmpty(productNameString) &&
+                TextUtils.isEmpty(productPriceString) && TextUtils.isEmpty(productQuantityString)){
+            return;
+        }
+
         ContentValues values = new ContentValues();
 
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, productNameString);
-        values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
-        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumberString);
 
-        //long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
-        Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+        int productPrice = 0;
+        int productQuantity = 0;
 
-        if (newUri == null) {
-            // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                    Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(productPriceString)) {
+            productPrice = Integer.parseInt(productPriceString);
+        }
+        if (!TextUtils.isEmpty(productQuantityString)) {
+            productQuantity = Integer.parseInt(productQuantityString);
+        }
+
+        values.put(ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
+        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
+
+        if (mCurrentProductUri == null) {
+            //long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
+            Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+
+            if (newUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_insert_product_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
-            // Otherwise, the insertion was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.editor_insert_product_successful),
-                    Toast.LENGTH_SHORT).show();
+            int rowsChanged = getContentResolver().update(mCurrentProductUri, values, null, null);
+
+            if (rowsChanged == 0) {
+                Toast.makeText(this, getString(R.string.editor_update_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the update was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_update_product_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -102,6 +132,7 @@ public class EditorActivity extends AppCompatActivity
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Do nothing for now
+                saveProduct();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

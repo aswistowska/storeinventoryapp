@@ -65,6 +65,7 @@ public class DetailsActivity extends AppCompatActivity
             // Respond to a click on the "Save" menu option
             case R.id.action_edit:
                 Intent intent = new Intent(DetailsActivity.this, EditorActivity.class);
+                intent.setData(mCurrentProductUri);
                 startActivity(intent);
                 return true;
             // Respond to a click on the "Delete" menu option
