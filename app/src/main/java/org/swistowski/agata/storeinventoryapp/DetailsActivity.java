@@ -1,6 +1,7 @@
 package org.swistowski.agata.storeinventoryapp;
 
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -8,11 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.swistowski.agata.storeinventoryapp.data.ProductContract.ProductEntry;
 
@@ -69,13 +72,14 @@ public class DetailsActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             // Respond to a click on the "Delete" menu option
+            // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
-                // Do nothing for now
+                showDeleteConfirmationDialog();
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // Navigate back to parent activity (MainActivity)
-                NavUtils.navigateUpFromSameTask(this);
+                NavUtils.navigateUpFromSameTask(DetailsActivity.this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,5 +126,42 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteProduct();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deleteProduct() {
+        if (mCurrentProductUri != null){
+            int rowsDeleted = getContentResolver().delete(mCurrentProductUri, null, null);
+
+            // Show a toast message depending on whether or not the update was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were affected, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.editor_delete_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_delete_product_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 }

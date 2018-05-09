@@ -2,16 +2,20 @@ package org.swistowski.agata.storeinventoryapp;
 
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,11 +28,24 @@ public class EditorActivity extends AppCompatActivity
 
     private Uri mCurrentProductUri;
 
+    private boolean mProductHasChanged = false;
+
     private EditText mProductNameEditText;
     private EditText mProductPriceEditText;
     private EditText mProductQuantityEditText;
     private EditText mSupplierNameEditText;
     private EditText mSupplierPhoneNumberEditText;
+
+    // OnTouchListener that listens for any user touches on a View, implying that they are modifying
+    // the view, and we change the mPetHasChanged boolean to true.
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mProductHasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +69,15 @@ public class EditorActivity extends AppCompatActivity
         mSupplierNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone_number);
 
+        // Setup OnTouchListeners on all the input fields, so we can determine if the user
+        // has touched or modified them. This will let us know if there are unsaved changes
+        // or not, if the user tries to leave the editor without saving.
+        mProductNameEditText.setOnTouchListener(mTouchListener);
+        mProductPriceEditText.setOnTouchListener(mTouchListener);
+        mProductQuantityEditText.setOnTouchListener(mTouchListener);
+        mSupplierNameEditText.setOnTouchListener(mTouchListener);
+        mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
+
     }
 
     private void saveProduct() {
@@ -66,13 +92,13 @@ public class EditorActivity extends AppCompatActivity
         //ProductDbHelper mDbHelper = new ProductDbHelper(this);
         //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        if(mCurrentProductUri == null && TextUtils.isEmpty(productNameString) &&
-                TextUtils.isEmpty(productPriceString) && TextUtils.isEmpty(productQuantityString)){
+        if (mCurrentProductUri == null && TextUtils.isEmpty(productNameString) &&
+                TextUtils.isEmpty(productPriceString) && TextUtils.isEmpty(productQuantityString)
+                && TextUtils.isEmpty(supplierNameString) && TextUtils.isEmpty(supplierPhoneNumberString)){
             return;
         }
 
         ContentValues values = new ContentValues();
-
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, productNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneNumberString);
@@ -131,18 +157,27 @@ public class EditorActivity extends AppCompatActivity
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
                 saveProduct();
-                return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                // Do nothing for now
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+                if (mCurrentProductUri == null) {
+                    if (!mProductHasChanged) {
+                        NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                        return true;
+                    }
+                    DialogInterface.OnClickListener discardButtonClickListener =
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // User clicked "Discard" button, navigate to parent activity.
+                                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                                }
+                            };
+                    // Show a dialog that notifies the user they have unsaved changes
+                    showUnsavedChangesDialog(discardButtonClickListener);
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -188,5 +223,39 @@ public class EditorActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
+    }
+
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mCurrentProductUri == null) {
+            if (!mProductHasChanged) {
+                super.onBackPressed();
+                return;
+            }
+            DialogInterface.OnClickListener discardButtonClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    };
+            showUnsavedChangesDialog(discardButtonClickListener);
+        }
     }
 }
