@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.swistowski.agata.storeinventoryapp.data.ProductContract;
 import org.swistowski.agata.storeinventoryapp.data.ProductContract.ProductEntry;
 
 public class MainActivity extends AppCompatActivity
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                deleteAllProducts();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -118,5 +120,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursorAdapter.swapCursor(null);
+    }
+
+
+    private void deleteAllProducts() {
+        int rowsDeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, null, null);
+        Log.v("MainActivity", rowsDeleted + " rows deleted from pet database");
+    }
+
+
+    public void decreaseCount(Integer columnId, Integer quantity) {
+        if (quantity > 0) {
+            quantity = quantity - 1;
+
+            ContentValues values = new ContentValues();
+            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
+
+            Uri updateUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, columnId);
+
+            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+        }
     }
 }

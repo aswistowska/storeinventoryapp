@@ -11,8 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +53,9 @@ public class DetailsActivity extends AppCompatActivity
         mProductQuantityText = (TextView) findViewById(R.id.product_quantity);
         mSupplierNameText = (TextView) findViewById(R.id.supplier_name);
         mSupplierPhoneNumberText = (TextView) findViewById(R.id.supplier_phone_number);
+        Button removeButton = (Button) findViewById(R.id.remove);
+        Button reciveButton = (Button) findViewById(R.id.recive);
+        Button orderButton = (Button) findViewById(R.id.order);
     }
 
     @Override
@@ -71,7 +76,6 @@ public class DetailsActivity extends AppCompatActivity
                 intent.setData(mCurrentProductUri);
                 startActivity(intent);
                 return true;
-            // Respond to a click on the "Delete" menu option
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
                 showDeleteConfirmationDialog();

@@ -105,11 +105,13 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
         <Button
+            android:id="@+id/remove"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/remove_1"/>
         <Button
+            android:id="@+id/recive"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -117,6 +119,7 @@
     </LinearLayout>
 
         <Button
+            android:id="@+id/order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
