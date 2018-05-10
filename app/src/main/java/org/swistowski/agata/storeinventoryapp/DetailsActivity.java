@@ -1,5 +1,7 @@
 package org.swistowski.agata.storeinventoryapp;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,6 +38,9 @@ public class DetailsActivity extends AppCompatActivity
     private TextView mProductQuantityText;
     private TextView mSupplierNameText;
     private TextView mSupplierPhoneNumberText;
+    private Button mRemoveButton;
+    private Button mReciveButton;
+    private Button mOrderButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,9 +59,9 @@ public class DetailsActivity extends AppCompatActivity
         mProductQuantityText = (TextView) findViewById(R.id.product_quantity);
         mSupplierNameText = (TextView) findViewById(R.id.supplier_name);
         mSupplierPhoneNumberText = (TextView) findViewById(R.id.supplier_phone_number);
-        Button removeButton = (Button) findViewById(R.id.remove);
-        Button reciveButton = (Button) findViewById(R.id.recive);
-        Button orderButton = (Button) findViewById(R.id.order);
+        mRemoveButton = (Button) findViewById(R.id.remove);
+        mReciveButton = (Button) findViewById(R.id.recive);
+        mOrderButton = (Button) findViewById(R.id.order);
     }
 
     @Override
@@ -105,7 +111,7 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(android.content.Loader<Cursor> loader, final Cursor cursor) {
         if (cursor.moveToFirst()) {
             int productNameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
             int productPriceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
@@ -124,6 +130,55 @@ public class DetailsActivity extends AppCompatActivity
             mProductQuantityText.setText(Integer.toString(productQuantity));
             mSupplierNameText.setText(supplierName);
             mSupplierPhoneNumberText.setText(supplierPhoneNumber);
+
+            mRemoveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int columnIdColumnIndex = cursor.getColumnIndex(ProductEntry._ID);
+                    int quantityRemoveColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+                    int columnId = cursor.getInt(columnIdColumnIndex);
+                    int quantityRemove = cursor.getInt(quantityRemoveColumnIndex);
+
+                    if (quantityRemove > 0) {
+                        quantityRemove = quantityRemove - 1;
+
+                        ContentValues values = new ContentValues();
+                        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityRemove);
+
+                        Uri updateUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, columnId);
+                        getContentResolver().update(updateUri, values, null, null);
+                    }
+                }
+            });
+
+            mReciveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int columnIdColumnIndex = cursor.getColumnIndex(ProductEntry._ID);
+                    int quantityRecieveColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+                    int columnId = cursor.getInt(columnIdColumnIndex);
+                    int quantityRecieve = cursor.getInt(quantityRecieveColumnIndex);
+
+                    quantityRecieve = quantityRecieve + 1;
+
+                    ContentValues values = new ContentValues();
+                    values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityRecieve);
+
+                    Uri updateUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, columnId);
+                    getContentResolver().update(updateUri, values, null, null);
+                }
+            });
+
+            mOrderButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+                    String suppliePhoneNumber = cursor.getString(supplierPhoneNumberColumnIndex);
+
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + suppliePhoneNumber));
+                    startActivity(intent);
+                }
+            });
         }
     }
 

@@ -129,16 +129,16 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void decreaseCount(Integer columnId, Integer quantity) {
-        if (quantity > 0) {
-            quantity = quantity - 1;
+    public void decreaseCount(Integer columnId, Integer quantityDecrase) {
+        if (quantityDecrase > 0) {
+            quantityDecrase = quantityDecrase - 1;
 
             ContentValues values = new ContentValues();
-            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
+            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityDecrase);
 
             Uri updateUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, columnId);
 
-            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+            int rowsChanged = getContentResolver().update(updateUri, values, null, null);
         }
     }
 }

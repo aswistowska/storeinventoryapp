@@ -14,8 +14,6 @@ import org.swistowski.agata.storeinventoryapp.data.ProductContract.ProductEntry;
 
 public class ProductCursorAdapter extends CursorAdapter {
 
-    private Cursor mCursor;
-
     public ProductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }
@@ -28,32 +26,35 @@ public class ProductCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
-        this.mCursor = cursor;
-
         TextView productNameTextView = (TextView) view.findViewById(R.id.product_name);
         TextView productPriceTextView = (TextView) view.findViewById(R.id.product_price);
         TextView productQuantityView = (TextView) view.findViewById(R.id.product_quantity);
         Button sellButton = (Button) view.findViewById(R.id.sell);
 
-        int nameColumnIndex = mCursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
-        int priceColumnIndex = mCursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
-        int quantityColumnIndex = mCursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
+        int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
+        int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
 
-        String productName = mCursor.getString(nameColumnIndex);
-        int productPrice = mCursor.getInt(priceColumnIndex);
-        int productQuantity = mCursor.getInt(quantityColumnIndex);
+        String productName = cursor.getString(nameColumnIndex);
+        int productPrice = cursor.getInt(priceColumnIndex);
+        int productQuantity = cursor.getInt(quantityColumnIndex);
 
         productNameTextView.setText(productName);
         productPriceTextView.setText(Integer.toString(productPrice));
         productQuantityView.setText(Integer.toString(productQuantity));
 
+        final int cursorPosition = cursor.getPosition();
+
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int columnIdIndex = mCursor.getColumnIndex(ProductEntry._ID);
-                int quantityColumnIndex = mCursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
-                String columnId = mCursor.getString(columnIdIndex);
-                int quantity = mCursor.getInt(quantityColumnIndex);
+
+                cursor.moveToPosition(cursorPosition);
+
+                int columnIdIndex = cursor.getColumnIndex(ProductEntry._ID);
+                int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+                String columnId = cursor.getString(columnIdIndex);
+                int quantity = cursor.getInt(quantityColumnIndex);
                 MainActivity mainActivity = (MainActivity) context;
                 mainActivity.decreaseCount( Integer.valueOf(columnId), Integer.valueOf(quantity));
             }

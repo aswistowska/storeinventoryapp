@@ -1,5 +1,6 @@
 package org.swistowski.agata.storeinventoryapp;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -178,6 +179,25 @@ public class EditorActivity extends AppCompatActivity
                     // Show a dialog that notifies the user they have unsaved changes
                     showUnsavedChangesDialog(discardButtonClickListener);
                     return true;
+                } else {
+                    final Intent intent = new Intent(this, DetailsActivity.class);
+                    intent.setData(mCurrentProductUri);
+
+                    if( !mProductHasChanged) {
+                        NavUtils.navigateUpTo(EditorActivity.this, intent);
+                        return true;
+                    }
+                    DialogInterface.OnClickListener discardButtonClickListener =
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // User clicked "Discard" button, navigate to parent activity.
+                                    NavUtils.navigateUpTo(EditorActivity.this, intent);
+                                }
+                            };
+                    // Show a dialog that notifies the user they have unsaved changes
+                    showUnsavedChangesDialog(discardButtonClickListener);
+                    return true;
                 }
         }
         return super.onOptionsItemSelected(item);
@@ -257,6 +277,25 @@ public class EditorActivity extends AppCompatActivity
                         }
                     };
             showUnsavedChangesDialog(discardButtonClickListener);
+        } else {
+            final Intent intent = new Intent(this, DetailsActivity.class);
+            intent.setData(mCurrentProductUri);
+
+            if( !mProductHasChanged) {
+                NavUtils.navigateUpTo(EditorActivity.this, intent);
+                return;
+            }
+            DialogInterface.OnClickListener discardButtonClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // User clicked "Discard" button, navigate to parent activity.
+                            NavUtils.navigateUpTo(EditorActivity.this, intent);
+                        }
+                    };
+            // Show a dialog that notifies the user they have unsaved changes
+            showUnsavedChangesDialog(discardButtonClickListener);
+            return;
         }
     }
 }
