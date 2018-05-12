@@ -88,10 +88,7 @@ public class ProductProvider extends ContentProvider {
      */
     private Uri insertProduct(Uri uri, ContentValues values) {
 
-        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-        if (name == null) {
-            throw new IllegalArgumentException("Product requires a name");
-        }
+        validateName(values);
 
         Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
         if (price != null && price < 0){
@@ -127,6 +124,13 @@ public class ProductProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
+    private void validateName(ContentValues values) {
+        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
+        if (name == null || name.equals("")) {
+            throw new IllegalArgumentException("Product requires a name");
+        }
+    }
+
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection,
                       String[] selectionArgs) {
@@ -145,10 +149,7 @@ public class ProductProvider extends ContentProvider {
 
     private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_NAME)) {
-            String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-            if (name == null) {
-                throw new IllegalArgumentException("Product requires a name");
-            }
+            validateName(values);
         }
 
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_PRICE)) {

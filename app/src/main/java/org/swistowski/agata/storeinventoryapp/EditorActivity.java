@@ -52,7 +52,7 @@ public class EditorActivity extends AppCompatActivity
         Intent intent = getIntent();
         mCurrentProductUri = intent.getData();
 
-        if(mCurrentProductUri == null) {
+        if (mCurrentProductUri == null) {
             setTitle(getString(R.string.editor_activity_add_product));
         } else {
             setTitle(getString(R.string.editor_activity_edit_product));
@@ -83,8 +83,8 @@ public class EditorActivity extends AppCompatActivity
 
         if (mCurrentProductUri == null && TextUtils.isEmpty(productNameString) &&
                 TextUtils.isEmpty(productPriceString) && TextUtils.isEmpty(productQuantityString)
-                && TextUtils.isEmpty(supplierNameString) && TextUtils.isEmpty(supplierPhoneNumberString)){
-            return false;
+                && TextUtils.isEmpty(supplierNameString) && TextUtils.isEmpty(supplierPhoneNumberString)) {
+            return true;
         }
 
         ContentValues values = new ContentValues();
@@ -106,27 +106,42 @@ public class EditorActivity extends AppCompatActivity
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
 
         if (mCurrentProductUri == null) {
-            Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+            Uri newUri;
+            try {
+                newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
             if (newUri == null) {
                 Toast.makeText(this, getString(R.string.editor_insert_product_failed),
                         Toast.LENGTH_SHORT).show();
+                return false;
             } else {
                 Toast.makeText(this, getString(R.string.editor_insert_product_successful),
                         Toast.LENGTH_SHORT).show();
+                return true;
             }
         } else {
-            int rowsChanged = getContentResolver().update(mCurrentProductUri, values, null, null);
+            int rowsChanged;
+            try {
+                rowsChanged = getContentResolver().update(mCurrentProductUri, values, null, null);
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
             if (rowsChanged == 0) {
                 Toast.makeText(this, getString(R.string.editor_update_product_failed),
                         Toast.LENGTH_SHORT).show();
+                return false;
             } else {
                 Toast.makeText(this, getString(R.string.editor_update_product_successful),
                         Toast.LENGTH_SHORT).show();
+                return true;
             }
         }
-        return true;
     }
 
     @Override
@@ -140,8 +155,9 @@ public class EditorActivity extends AppCompatActivity
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                saveProduct();
-                finish();
+                if (saveProduct()) {
+                    finish();
+                }
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
@@ -165,7 +181,7 @@ public class EditorActivity extends AppCompatActivity
                     final Intent intent = new Intent(this, DetailsActivity.class);
                     intent.setData(mCurrentProductUri);
 
-                    if( !mProductHasChanged) {
+                    if (!mProductHasChanged) {
                         NavUtils.navigateUpTo(EditorActivity.this, intent);
                         return true;
                     }
@@ -188,7 +204,7 @@ public class EditorActivity extends AppCompatActivity
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        String [] projection = {
+        String[] projection = {
                 ProductEntry._ID,
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_PRICE,
@@ -267,7 +283,7 @@ public class EditorActivity extends AppCompatActivity
             final Intent intent = new Intent(this, DetailsActivity.class);
             intent.setData(mCurrentProductUri);
 
-            if( !mProductHasChanged) {
+            if (!mProductHasChanged) {
                 NavUtils.navigateUpTo(EditorActivity.this, intent);
                 return;
             }
