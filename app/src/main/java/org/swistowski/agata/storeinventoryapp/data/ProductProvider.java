@@ -104,12 +104,12 @@ public class ProductProvider extends ContentProvider {
         }
 
         String suplierName = values.getAsString(ProductEntry.COLUMN_SUPPLIER_NAME);
-        if (suplierName == null) {
+        if (suplierName == null || suplierName.equals("")) {
             throw new IllegalArgumentException("Supplier requires a name");
         }
 
         String suplierPhoneNumber = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-        if (suplierPhoneNumber == null) {
+        if (suplierPhoneNumber == null || suplierPhoneNumber.equals("")) {
             throw new IllegalArgumentException("Supplier requires a phone number");
         }
 
@@ -146,7 +146,7 @@ public class ProductProvider extends ContentProvider {
     private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         if (values.containsKey(ProductEntry.COLUMN_PRODUCT_NAME)) {
             String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
-            if (name == null) {
+            if (name == null || name.equals("")) {
                 throw new IllegalArgumentException("Product requires a name");
             }
         }
@@ -167,14 +167,14 @@ public class ProductProvider extends ContentProvider {
 
         if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_NAME)) {
             String supplierName = values.getAsString(ProductEntry.COLUMN_SUPPLIER_NAME);
-            if (supplierName == null) {
+            if (supplierName == null || supplierName.equals("")) {
                 throw new IllegalArgumentException("Supplier requires a name");
             }
         }
 
         if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER)) {
             String supplierPhoneNumber = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-            if (supplierPhoneNumber == null) {
+            if (supplierPhoneNumber == null || supplierPhoneNumber.equals("")) {
                 throw new IllegalArgumentException("Supplier requires a phone number");
             }
         }
