@@ -1,6 +1,5 @@
 package org.swistowski.agata.storeinventoryapp;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -37,9 +36,6 @@ public class EditorActivity extends AppCompatActivity
     private EditText mSupplierNameEditText;
     private EditText mSupplierPhoneNumberEditText;
 
-    // OnTouchListener that listens for any user touches on a View, implying that they are modifying
-    // the view, and we change the mPetHasChanged boolean to true.
-
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -70,9 +66,6 @@ public class EditorActivity extends AppCompatActivity
         mSupplierNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone_number);
 
-        // Setup OnTouchListeners on all the input fields, so we can determine if the user
-        // has touched or modified them. This will let us know if there are unsaved changes
-        // or not, if the user tries to leave the editor without saving.
         mProductNameEditText.setOnTouchListener(mTouchListener);
         mProductPriceEditText.setOnTouchListener(mTouchListener);
         mProductQuantityEditText.setOnTouchListener(mTouchListener);
@@ -81,22 +74,17 @@ public class EditorActivity extends AppCompatActivity
 
     }
 
-    private void saveProduct() {
+    private boolean saveProduct() {
         String productNameString = mProductNameEditText.getText().toString().trim();
         String productPriceString = mProductPriceEditText.getText().toString().trim();
-        //int productPrice = Integer.parseInt(productPriceString);
         String productQuantityString = mProductQuantityEditText.getText().toString().trim();
-        //int productQuantity = Integer.parseInt(productQuantityString);
         String supplierNameString = mSupplierNameEditText.getText().toString().trim();
         String supplierPhoneNumberString = mSupplierPhoneNumberEditText.getText().toString().trim();
-
-        //ProductDbHelper mDbHelper = new ProductDbHelper(this);
-        //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (mCurrentProductUri == null && TextUtils.isEmpty(productNameString) &&
                 TextUtils.isEmpty(productPriceString) && TextUtils.isEmpty(productQuantityString)
                 && TextUtils.isEmpty(supplierNameString) && TextUtils.isEmpty(supplierPhoneNumberString)){
-            return;
+            return false;
         }
 
         ContentValues values = new ContentValues();
@@ -118,15 +106,12 @@ public class EditorActivity extends AppCompatActivity
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
 
         if (mCurrentProductUri == null) {
-            //long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
             Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
 
             if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
                 Toast.makeText(this, getString(R.string.editor_insert_product_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_insert_product_successful),
                         Toast.LENGTH_SHORT).show();
             }
@@ -137,24 +122,21 @@ public class EditorActivity extends AppCompatActivity
                 Toast.makeText(this, getString(R.string.editor_update_product_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise, the update was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_update_product_successful),
                         Toast.LENGTH_SHORT).show();
             }
         }
+        return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
@@ -243,7 +225,11 @@ public class EditorActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
-
+        mProductNameEditText.setText("");
+        mProductPriceEditText.setText("");
+        mProductQuantityEditText.setText("");
+        mSupplierNameEditText.setText("");
+        mSupplierPhoneNumberEditText.setText("");
     }
 
     private void showUnsavedChangesDialog(

@@ -17,24 +17,49 @@
             android:id="@+id/product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText" />
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="16sp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <TextView
-                android:id="@+id/product_price"
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorSecondaryText"  />
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/price_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dolar"
+                    android:textColor="@color/colorDivider"
+                    android:paddingRight="8dp"/>
+                <TextView
+                    android:id="@+id/product_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSecondaryText"
+                    android:layout_toRightOf="@+id/price_symbol"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/product_quantity"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorSecondaryText"  />
+                <TextView
+                    android:id="@+id/qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/qty"
+                    android:textColor="@color/colorDivider"
+                    android:paddingRight="8dp"/>
+                <TextView
+                    android:id="@+id/product_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSecondaryText"
+                    android:layout_toRightOf="@+id/qty"/>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -44,5 +69,7 @@
         android:layout_height="69dp"
         android:layout_weight="1"
         android:text="@string/sell"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColor="@color/colorAccentText"/>
 </LinearLayout>

@@ -22,7 +22,10 @@
             android:id="@+id/empty_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorSecondaryText"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:text="@string/it_s_empty_store"/>
 
         <TextView
             android:id="@+id/empty_subtitle_text"
@@ -30,7 +33,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/empty_title_text"
             android:layout_centerHorizontal="true"
-            android:paddingTop="8dp"/>
+            android:paddingTop="8dp"
+            android:textColor="@color/colorSecondaryText"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:text="@string/get_started_by_adding_a_product"/>
 
     </RelativeLayout>
 

@@ -16,12 +16,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/product_name"/>
+            android:text="@string/product_name"
+            style="@style/DetailActivityTextStyle"/>
         <TextView
             android:id="@+id/product_name"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            style="@style/DetailActivityDbTextStyle"/>
 
     </LinearLayout>
 
@@ -35,12 +37,18 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/product_price"/>
+            android:text="@string/product_price"
+            style="@style/DetailActivityTextStyle"/>
         <TextView
             android:id="@+id/product_price"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            style="@style/DetailActivityDbTextStyle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dolar"/>
 
     </LinearLayout>
 
@@ -54,12 +62,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/quantity"/>
+            android:text="@string/quantity"
+            style="@style/DetailActivityTextStyle"/>
         <TextView
             android:id="@+id/product_quantity"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            style="@style/DetailActivityDbTextStyle"/>
 
     </LinearLayout>
 
@@ -73,12 +83,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/supplier_name"/>
+            android:text="@string/supplier_name"
+            style="@style/DetailActivityTextStyle"/>
         <TextView
             android:id="@+id/supplier_name"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            style="@style/DetailActivityDbTextStyle"/>
 
     </LinearLayout>
 
@@ -92,12 +104,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/supplier_phone_number"/>
+            android:text="@string/supplier_phone_number"
+            style="@style/DetailActivityTextStyle"/>
         <TextView
             android:id="@+id/supplier_phone_number"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            style="@style/DetailActivityDbTextStyle"/>
 
     </LinearLayout>
     <LinearLayout
@@ -109,13 +123,17 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/remove_1"/>
+            android:text="@string/remove_1"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/colorAccentText"/>
         <Button
             android:id="@+id/recive"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/recive_1"/>
+            android:text="@string/recive_1"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/colorAccentText"/>
     </LinearLayout>
 
         <Button
@@ -123,5 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="@string/order"/>
+            android:text="@string/order"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/colorAccentText"/>
 </LinearLayout>

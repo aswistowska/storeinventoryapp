@@ -25,8 +25,14 @@
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep editing</string>
     <string name="delete_dialog_msg">Delete this product?</string>
+    <string name="delete_all_data_dialog_msg">Delete all products?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="editor_delete_product_failed">Error with deleting product</string>
     <string name="editor_delete_product_successful">Product deleted</string>
+    <string name="details_quantity_empty">No products available!</string>
+    <string name="dolar">$</string>
+    <string name="qty">Qty.:</string>
+    <string name="it_s_empty_store">It\'s empty store</string>
+    <string name="get_started_by_adding_a_product">Get started by adding a product</string>
 </resources>

@@ -103,6 +103,16 @@ public class ProductProvider extends ContentProvider {
             throw new IllegalArgumentException("Product requires valid quantity");
         }
 
+        String suplierName = values.getAsString(ProductEntry.COLUMN_SUPPLIER_NAME);
+        if (suplierName == null) {
+            throw new IllegalArgumentException("Supplier requires a name");
+        }
+
+        String suplierPhoneNumber = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+        if (suplierPhoneNumber == null) {
+            throw new IllegalArgumentException("Supplier requires a phone number");
+        }
+
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
         long id = database.insert(ProductEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
@@ -152,6 +162,20 @@ public class ProductProvider extends ContentProvider {
             Integer quantity = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUANTITY);
             if (quantity != null && quantity < 0) {
                 throw new IllegalArgumentException("Product requires valid quantity");
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_NAME)) {
+            String supplierName = values.getAsString(ProductEntry.COLUMN_SUPPLIER_NAME);
+            if (supplierName == null) {
+                throw new IllegalArgumentException("Supplier requires a name");
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER)) {
+            String supplierPhoneNumber = values.getAsString(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+            if (supplierPhoneNumber == null) {
+                throw new IllegalArgumentException("Supplier requires a phone number");
             }
         }
 
